@@ -1,0 +1,41 @@
+# .asf.yaml
+# .clang-format
+# .pre-commit-config.yaml
+# .vscode/
+# 3rdparty/
+# CMakeLists.txt
+# CONTRIBUTORS.md
+# KEYS
+# LICENSE
+# Makefile
+# NEWS.md
+# NOTICE
+# README.md
+# apps/
+# # benchmark_scripts/
+# build/
+# ci/
+# cmake/
+# conda/
+# configs/
+# conftest.py
+# docker/
+# docs/
+# gallery/
+# golang/
+!include/
+# jvm/
+# licenses/
+# mypy.ini
+# pyproject.toml
+!python/
+# relay_models/
+# rust/
+!src/
+# tests/
+# venv/
+# version.py
+# vta/
+# web/
+#
+# __pycache__/
