@@ -42,12 +42,18 @@ available_models: Dict[str, Tuple[str, str, Tuple[int, ...]]] = {
 # via tvm.target.Target(<CUDA TAG>)
 available_targets: Dict[str, tvm.target.Target] = {
     "A100": tvm.target.Target("nvidia/nvidia-a100"),
+    "a100": tvm.target.Target("nvidia/nvidia-a100"),
+
     "P100": tvm.target.Target("nvidia/tesla-p100"),
-    "LLVM": tvm.target.Target("llvm"),
+    "p100": tvm.target.Target("nvidia/tesla-p100"),
+
+    "LLVM": tvm.target.Target("llvm -num-cores 6"),
+    "llvm": tvm.target.Target("llvm -num-cores 6"),
+
     "LLVM_AVX2": tvm.target.Target("llvm -mcpu=core-avx2"),
-    "c": tvm.target.Target("c"),
-    "ccompiler": tvm.target.Target("ccompiler"),
-    "opencl": tvm.target.Target("opencl"),
+    # "c": tvm.target.Target("c"),
+    # "ccompiler": tvm.target.Target("ccompiler"),
+    # "opencl": tvm.target.Target("opencl"),
 }
 
 ROOT_PATH: Path = Path(__file__).parents[1]
@@ -117,7 +123,7 @@ models: Dict[str, Tuple[str, str, Tuple[int, ...]]] = {
 }
 
 # target : tvm.target.Target = available_targets[target_name]
-target: tvm.target.Target = tvm.target.Target("llvm -num-cores 6")
+# target: tvm.target.Target = tvm.target.Target("llvm -num-cores 6")
 
 compiled_suffix: str
 if target_name in available_targets.keys():

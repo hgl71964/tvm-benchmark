@@ -74,6 +74,7 @@ def get_relay_network(name: str,
     model_json: str = f"{name}-{layout}-{dtype}-{workload_shape}-{configs.batch_size}_model.json"
     params_json: str = f"{name}-{layout}-{dtype}-{workload_shape}-{configs.batch_size}_params.tvmbytes"
 
+    dir_path = configs.RELAY_MODELS_PATH
     model_json_path: Path = configs.RELAY_MODELS_PATH.joinpath(model_json)
     params_bytes_path: Path = configs.RELAY_MODELS_PATH.joinpath(params_json)
 
@@ -270,6 +271,9 @@ def get_relay_network(name: str,
         raise ValueError(f"Model not supported: {name}")
 
     # Write model to file
+    if not os.path.exists(dir_path):
+        os.mkdir(dir_path)
+
     with open(model_json_path, 'w') as f:
         mod_json = json.loads(tvm.ir.save_json(mod))
         json.dump(mod_json, f, indent=4)

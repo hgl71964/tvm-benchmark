@@ -35,7 +35,7 @@ from tvm.runtime.module import Module
 import tvm.contrib.graph_executor as graph_executor
 
 # benchmark utils
-import auto_sched.configs as configs
+import auto_sched.benchmark_configs as configs
 from auto_sched.get_network import get_relay_network
 
 from absl import app
@@ -43,7 +43,8 @@ from absl import flags
 
 FLAGS = flags.FLAGS
 flags.DEFINE_integer("e", 1, "")
-flags.DEFINE_string("mode", "tune", "")
+flags.DEFINE_string("mode", "tune", "compile mode")
+flags.DEFINE_string("t", "llvm", "target")
 
 # This script is modified from https://github.com/apache/tvm/blob/main/tests/python/integration/test_tuning.py
 logging.basicConfig(
@@ -81,7 +82,7 @@ def ms_tune(
         print(profiler.table())
 
         # 'llvm' -> tvm.cpu(0)
-        device = tvm.device(str(configs.target), 0)
+        device = tvm.device(str(target), 0)
         graph_module = graph_executor.GraphModule(lib["default"](device))
     return graph_module
 
@@ -105,6 +106,10 @@ def main(_):
     tuning_log_path = configs.tuning_logs_path
     operator_libs_path = configs.operator_libs_path
 
+    assert FLAGS.t in configs.available_targets, f"Unknown target: {FLAGS.t}"
+    print(f"using target: {FLAGS.t}")
+    target = configs.available_targets[FLAGS.t]
+
     # For each model listed in config, load the relay representation of the
     # model, compiles to tvm relay factory module, and store the results into
     # individual files, whose file names are specified by the model name and
@@ -125,14 +130,14 @@ def main(_):
                 mod=mod,
                 params=params,
                 input_shape=input_shape,
-                target=configs.target,
+                target=target,
             )
         elif FLAGS.mode == 'build':
             graph_module = build(
                 mod=mod,
                 params=params,
                 input_shape=input_shape,
-                target=configs.target,
+                target=target,
             )
         else:
             raise RuntimeError(f"Unknown mode: {FLAGS.mode}")
@@ -143,7 +148,7 @@ def main(_):
         #     low=0.,
         #     high=1.,
         # )
-        dev = tvm.device(str(configs.target), 0)
+        dev = tvm.device(str(target), 0)
         result = graph_module.benchmark(dev)
 
         # cost = result.mean * 1e3
