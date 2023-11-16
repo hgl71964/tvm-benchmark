@@ -6,10 +6,11 @@ import numpy as np
 from pathlib import Path
 
 import tvm, tvm.relay, tvm.relay.testing
+from . import benchmark_configs as Configs
 
 
 def get_relay_network(name: str,
-                      configs,
+                      configs: Configs,
                       batch_size: int = 1,
                       layout="NHWC",
                       dtype="float32",

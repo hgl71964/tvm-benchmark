@@ -94,7 +94,7 @@ def build(
     target: Target,
 ):
     with tvm.transform.PassContext(opt_level=3):
-        lib = relay.build_module.build(mod, target=target, params=params)
+        lib: ExecutorFactoryModule = relay.build_module.build(mod, target=target, params=params)
         dev = tvm.device(str(target), 0)
         graph_module = graph_executor.GraphModule(lib["default"](dev))
     return graph_module
