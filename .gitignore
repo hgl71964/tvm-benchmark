@@ -39,3 +39,4 @@ vta/
 web/
 
 __pycache__/
+*pyc
