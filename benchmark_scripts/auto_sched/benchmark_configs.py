@@ -43,13 +43,10 @@ available_models: Dict[str, Tuple[str, str, Tuple[int, ...]]] = {
 available_targets: Dict[str, tvm.target.Target] = {
     "A100": tvm.target.Target("nvidia/nvidia-a100"),
     "a100": tvm.target.Target("nvidia/nvidia-a100"),
-
     "P100": tvm.target.Target("nvidia/tesla-p100"),
     "p100": tvm.target.Target("nvidia/tesla-p100"),
-
     "LLVM": tvm.target.Target("llvm -num-cores 6"),
     "llvm": tvm.target.Target("llvm -num-cores 6"),
-
     "LLVM_AVX2": tvm.target.Target("llvm -mcpu=core-avx2"),
     # "c": tvm.target.Target("c"),
     # "ccompiler": tvm.target.Target("ccompiler"),

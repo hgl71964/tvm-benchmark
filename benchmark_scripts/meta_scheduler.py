@@ -15,12 +15,12 @@
 # specific language governing permissions and limitations
 # under the License.
 # pylint: disable=missing-docstring
+import os
 import logging
 import tempfile
 from typing import List, Optional, Dict, Tuple, Union
 
 import numpy as np
-import pytest
 
 import tvm
 from tvm import relay
@@ -42,8 +42,8 @@ from absl import app
 from absl import flags
 
 FLAGS = flags.FLAGS
-flags.DEFINE_integer("e", 1, "")
-flags.DEFINE_string("mode", "tune", "compile mode")
+flags.DEFINE_integer("d", 0, "debug or not")
+flags.DEFINE_string("mode", "build", "compile mode")
 flags.DEFINE_string("t", "llvm", "target")
 
 # This script is modified from https://github.com/apache/tvm/blob/main/tests/python/integration/test_tuning.py
@@ -94,7 +94,9 @@ def build(
     target: Target,
 ):
     with tvm.transform.PassContext(opt_level=3):
-        lib: ExecutorFactoryModule = relay.build_module.build(mod, target=target, params=params)
+        lib: ExecutorFactoryModule = relay.build_module.build(mod,
+                                                              target=target,
+                                                              params=params)
         dev = tvm.device(str(target), 0)
         graph_module = graph_executor.GraphModule(lib["default"](dev))
     return graph_module
@@ -107,8 +109,14 @@ def main(_):
     operator_libs_path = configs.operator_libs_path
 
     assert FLAGS.t in configs.available_targets, f"Unknown target: {FLAGS.t}"
+    print(f"build mode: {FLAGS.mode}")
     print(f"using target: {FLAGS.t}")
     target = configs.available_targets[FLAGS.t]
+
+    if FLAGS.d:
+        # so that python stops and we can attach debugger
+        pid = os.getpid()
+        input(f"attach to pid {pid}")
 
     # For each model listed in config, load the relay representation of the
     # model, compiles to tvm relay factory module, and store the results into
